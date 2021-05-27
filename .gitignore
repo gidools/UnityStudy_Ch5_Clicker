@@ -1,3 +1,5 @@
 .vsconfig
 Library/
 Temp/
+Logs/
+.vs/
