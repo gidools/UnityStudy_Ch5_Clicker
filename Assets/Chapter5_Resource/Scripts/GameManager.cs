@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
     public Button buttonPrice;
     public Button buttonRecruit;
     public GameObject prefabMoney;
+    public int width;
+    public float space;
+    public GameObject prefabEmployee;
+    public Text textPerson;
 
     void Start()
     {
@@ -63,6 +67,15 @@ public class GameManager : MonoBehaviour
         {
             textMoney.text = money.ToString("###,###") + "원";
         }
+
+        if (employeeCount == 0)
+        {
+            textPerson.text = "0명";
+        }
+        else
+        {
+            textPerson.text = employeeCount + "명";
+        }
     }
 
     private void UpdatePanelText()
@@ -85,6 +98,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void Recruit()
+    {
+        if (money >= AutoWork.autoIncreasePrice)
+        {
+            money -= AutoWork.autoIncreasePrice;
+            employeeCount += 1;
+            AutoWork.autoMoneyIncreaseAmount += moneyIncreaseLevel * 10;
+            AutoWork.autoIncreasePrice += employeeCount * 500;
+
+            CreateEmployee();
+        }
+    }
+
     private void ButtonActiveCheck()
     {
         buttonPrice.interactable = (money >= moneyIncreasePrice);
@@ -97,5 +123,13 @@ public class GameManager : MonoBehaviour
         textRecruit.text += AutoWork.autoMoneyIncreaseAmount.ToString("###,###") + " 원\n";
         textRecruit.text += "업그레이드 가격 > \n";
         textRecruit.text += AutoWork.autoIncreasePrice.ToString("###,###") + " 원\n";
+    }
+
+    private void CreateEmployee()
+    {
+        Vector2 bossSpot = GameObject.Find("Boss").transform.position;
+        float spotX = bossSpot.x + (employeeCount % width) * space;
+        float spotY = bossSpot.y - (employeeCount / width) * space;
+        Instantiate(prefabEmployee, new Vector2(spotX, spotY), Quaternion.identity);
     }
 }
